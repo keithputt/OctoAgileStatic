@@ -65,7 +65,7 @@ function processDeviceData(octopusPrices) {
         deviceTimeSlot.start = device.start;
         deviceTimeSlot.end = device.end;
         deviceTimeSlot.hours = device.hours;
-        deviceTimeSlot.prices = getTimeSlots(octopusPrices, device.hours);
+        deviceTimeSlot.prices = getTimeSlots(filterOctopusPrices(octopusPrices, device.start, device.end),device.hours);
         deviceTimeSlots.push(deviceTimeSlot);
     });
     return deviceTimeSlots;
