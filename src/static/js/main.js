@@ -96,8 +96,8 @@ function updateViewTitle(period) {
         case 'yesterday':
             currentViewTitle.textContent = "Yesterday's Prices";
             break;
-        case 'week':
-            currentViewTitle.textContent = "Week Ahead Prices";
+        case 'now':
+            currentViewTitle.textContent = "Current Prices";
             break;
         default:
             currentViewTitle.textContent = "Energy Prices";
