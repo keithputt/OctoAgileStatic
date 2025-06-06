@@ -1,17 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-bs-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octopus Energy Agile Price Tracker</title>
+    
+    <!-- Bootstrap CSS (Replit dark theme) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./static/css/styles.css">
 </head>
-
 <body>
-  <main>
-    <h1>Vanilla JavaScript App</h1>
-  </main>
-</body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-bolt me-2"></i>
+                Octopus Energy Agile Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="nav-today" href="#" data-period="today">Today</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-tomorrow" href="#" data-period="tomorrow">Tomorrow</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-yesterday" href="#" data-period="yesterday">Yesterday</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-week" href="#" data-period="week">Week</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container my-4">
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    <span id="current-view-title">Today's Prices</span>
+                </h5>
+                <div class="text-end">
+                    <span class="badge bg-info me-2" id="current-time"></span>
+                    <span class="badge bg-secondary" id="current-price">Loading...</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="priceChart" height="300"></canvas>
+                </div>
+                <div id="chart-loading" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading price data...</p>
+                </div>
+                <div id="chart-error" class="alert alert-danger my-3 d-none">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="error-message">Unable to load price data.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3 mb-md-0">
+        <div class="card shadow h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-thumbs-up me-2"></i>
+                    Cheapest Times
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="cheapest-times-container">
+                    <div class="text-center py-4" id="cheapest-loading">
+                        <div class="spinner-border spinner-border-sm text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0 mt-2">Finding cheapest times...</p>
+                    </div>
+                    <ul class="list-group list-group-flush" id="cheapest-times-list">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-thumbs-down me-2"></i>
+                    Most Expensive Times
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="expensive-times-container">
+                    <div class="text-center py-4" id="expensive-loading">
+                        <div class="spinner-border spinner-border-sm text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0 mt-2">Finding expensive times...</p>
+                    </div>
+                    <ul class="list-group list-group-flush" id="expensive-times-list">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-car me-2"></i>
+                    Device Details
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Num hours</th>
+                                <th>Average Price (p/kWh)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="device-table-body">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <span class="ms-2">Loading devices...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-table me-2"></i>
+                    Price Details
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Price (p/kWh)</th>
+                                <th class="text-end">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="price-table-body">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <span class="ms-2">Loading prices...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    About Octopus Energy Agile
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    <strong>Octopus Energy Agile</strong> is a dynamic electricity tariff that changes price every 30 minutes based on wholesale electricity prices.
+                </p>
+                <p>
+                    Prices are typically:
+                </p>
+                <ul>
+                    <li><span class="badge bg-success">Cheaper</span> overnight when demand is low</li>
+                    <li><span class="badge bg-danger">More expensive</span> during peak times (4pm-7pm)</li>
+                    <li><span class="badge bg-info">Variable</span> based on renewable generation (windy/sunny days can be cheaper)</li>
+                </ul>
+                <p>
+                    This tracker helps you identify the cheapest times to use electricity for high-consumption tasks like charging electric vehicles,
+                    running washing machines, or using other energy-intensive appliances.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Price category legend -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tags me-2"></i>
+                    Price Categories
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <div class="price-legend very-low-bg">
+                        <span>Very Low</span>
+                        <small>&lt; 10p/kWh</small>
+                    </div>
+                    <div class="price-legend low-bg">
+                        <span>Low</span>
+                        <small>10-15p/kWh</small>
+                    </div>
+                    <div class="price-legend medium-bg">
+                        <span>Medium</span>
+                        <small>15-25p/kWh</small>
+                    </div>
+                    <div class="price-legend high-bg">
+                        <span>High</span>
+                        <small>25-35p/kWh</small>
+                    </div>
+                    <div class="price-legend very-high-bg">
+                        <span>Very High</span>
+                        <small>&gt; 35p/kWh</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-dark">
+        <div class="container text-center">
+            <span class="text-muted">
+                <i class="fas fa-bolt me-2"></i> Octopus Energy Agile Price Tracker
+                <span class="mx-2">|</span>
+                <a href="https://octopus.energy/dashboard/" target="_blank" class="text-muted">
+                    <i class="fas fa-external-link-alt me-1"></i>Octopus Energy Dashboard
+                </a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="./static/js/charts.js"></script>
+    <script src="./static/js/octopus.js"></script>
+    <script src="./static/js/device.js"></script>
+    <script src="./static/js/main.js"></script>
+    
+</body>
 </html>
