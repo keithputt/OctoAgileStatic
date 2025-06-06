@@ -18,7 +18,7 @@ function convertPeriodToFrom(period) {
     date.setDate(date.getDate() - 1);
     return date;
   }
-  
+
   return date; // 'now' case returns current time
 }
 
@@ -42,6 +42,11 @@ function convertPeriodToTo(period) {
     return date;
   }
   
+  if (period === 'now') {
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + 2);
+    return date;
+  }
   return date; // 'now' case returns current time
 }
 
