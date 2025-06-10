@@ -91,14 +91,15 @@ function createPriceChart(chartData) {
                     callbacks: {
                         title: function(tooltipItems) {
                             const idx = tooltipItems[0].dataIndex;
-                            const timeStr = chartData.labels[idx];
+                            //const timeStr = chartData.labels[idx];
 
                             
                             // Add date information if available
                             if (priceData[idx] && priceData[idx].timestamp) {
                                 const priceTime = new Date(priceData[idx].timestamp);
                                 const displayDate = priceTime.toLocaleDateString('en-GB', { day: '2-digit', month: 'short'});
-                                return `${displayDate} ${timeStr}`;
+                                const timeStr = priceTime.toLocaleDateString('en-GB', { hour: '2-digit', minute: '2-digit'});
+                                return `${displayDate} ${timeStr} ${idx}`;
                             }
                             return timeStr;
                         },
@@ -138,7 +139,7 @@ function createPriceChart(chartData) {
     });
     
     // Mark current time on chart if viewing today
-    if (currentPeriod === 'today') {
+    if (currentPeriod === 'now' || currentPeriod === 'today') {
         markCurrentTimeOnChart();
     }
 }
