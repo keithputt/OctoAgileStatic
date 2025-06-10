@@ -98,7 +98,7 @@ function createPriceChart(chartData) {
                             if (priceData[idx] && priceData[idx].timestamp) {
                                 const priceTime = new Date(priceData[idx].timestamp);
                                 const displayDate = priceTime.toLocaleDateString('en-GB', { day: '2-digit', month: 'short'});
-                                const timeStr = priceTime.toLocaleTmeString('en-GB', { hour: '2-digit', minute: '2-digit'});
+                                const timeStr = priceTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'});
                                 return `${displayDate} ${timeStr}`;
                             }
                             return timeStr;
