@@ -37,12 +37,13 @@ function filterOctopusPrices(octopusPriceData, start, end) {
 function getTimeSlots(prices, hours) {
     let timeSlots = [];
     let timeSlot = {};
+    let periods = hours * 2;
     
     // iterate through prices array using for loop
-    for (let i = 0; i < prices.length - (hours*2); i++) {
+    for (let i = 0; i < prices.length - periods; i++) {
         tempPrices = [];
         timestampTo = prices[i]["timestamp_to"];
-        for (let j = 1; j < hours*2; j++) {
+        for (let j = 0; j < periods; j++) {
             tempPrices.push(prices[i + j]);
             timestampTo = prices[i+j]["timestamp_to"];
         }
