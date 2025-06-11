@@ -4,7 +4,7 @@
  */
 
 // Keep track of the current view period
-let currentPeriod = 'today';
+let currentPeriod = 'now';
 let priceData = [];
 let priceChart = null;
 
