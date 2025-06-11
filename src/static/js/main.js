@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Load initial data for today
-    loadPriceData('today');
+    loadPriceData('now');
 });
 
 /**
