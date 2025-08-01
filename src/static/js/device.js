@@ -34,7 +34,7 @@ function filterOctopusPrices(octopusPriceData, start, end) {
 }
 
 
-function getTimeSlots(prices, hours) {
+function getTimeSlots(prices, hours ) {
     let timeSlots = [];
     let timeSlot = {};
     let periods = hours * 2;
@@ -71,3 +71,31 @@ function processDeviceData(octopusPrices) {
     });
     return deviceTimeSlots;
 }
+
+function getAveragePrices(octopusPrices) {
+    let hours = [1, 2, 3, 4];
+    let timeSlot = {};
+    let averages = [];
+
+    for (let j = 0; j < hours.length; j++) {
+        timeSlots = []
+        periods = hours[j] * 2;
+        // iterate through prices array using for loop up to maximum hours
+        for (let i = 0; i < octopusPrices.length - periods; i++) {
+            tempAveragePrices = [];
+            tempPrices = [];
+            for (let k = 0; k < periods; k++) {
+                if (i + k >= octopusPrices.length) {
+                    break;
+                }
+                tempPrices.push(octopusPrices[i + k]);
+            }
+            averagePrice = getAveragePrice(tempPrices);
+            //timeSlot = { timestamp : octopusPrices[i].timestamp, averagePrice: averagePrice };
+            timeSlots.push(averagePrice);
+        }
+        averages.push({hours : hours[j], averagePrices : timeSlots});
+    }
+    return averages;
+}
+av

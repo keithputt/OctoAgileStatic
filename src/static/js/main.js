@@ -7,6 +7,8 @@
 let currentPeriod = 'now';
 let priceData = [];
 let priceChart = null;
+let averagePriceData = [];
+let averagePriceChart = null;
 
 let deviceData = [];
 let devicePriceData = [];
@@ -114,12 +116,14 @@ function loadPriceData(period) {
         // call loadOctopusPrices and when it returns update the priceData variable
     loadOctopusPrices(period).then(data => {
         priceData = data;
+        averagePriceData = getAveragePrices(priceData); 
         // Update UI components
         updateCurrentPrice();
         updatePriceTable();
         updateCheapestTimes();
         updateExpensiveTimes();
         updatePriceChart();
+        updateAveragePriceChart();
 
         // Hide loading indicators
         showPricesLoading(false);
@@ -182,7 +186,7 @@ function showError(message) {
     chartLoading.style.display = 'none';
     chartError.classList.remove('d-none');
     errorMessage.textContent = message;
-    
+
     // Show error in other components too
     cheapestLoading.style.display = 'none';
     expensiveLoading.style.display = 'none';
@@ -432,6 +436,22 @@ function updatePriceChart() {
         priceChart.update();
     } else {
         createPriceChart(chartData);
+    }
+}
+
+/**
+ * Update the price chart
+ */
+function updateAveragePriceChart() {
+    // Get chart data
+    const averageChartData = prepareAveragePriceChartData();
+    
+    // Update or create chart
+    if (averagePriceChart) {
+        averagePriceChart.data = averageChartData;
+        averagePriceChart.update();
+    } else {
+        createAveragePriceChart(averageChartData);
     }
 }
 
