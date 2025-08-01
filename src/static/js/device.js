@@ -94,4 +94,3 @@ function getAveragePrices(octopusPrices) {
     }
     return averages;
 }
-av

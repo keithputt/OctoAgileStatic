@@ -21,13 +21,14 @@ function prepareAveragePriceChartData() {
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
-        const backgroundColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+
+        const backgroundColor = rainbowStop(index/averagePriceData.length);
 
         dataSets.push({
             label: `Average Price for ${price.hours} hours`,
             data: price.averagePrices,
-            backgroundColor: `rgba(${r}, ${g}, ${b}, 1.0)`,
-            borderColor: `rgb(${r}, ${g}, ${b})`,
+            backgroundColor: backgroundColor,
+            borderColor: backgroundColor,
             borderWidth: 1
         });
     });
@@ -39,6 +40,13 @@ function prepareAveragePriceChartData() {
         datasets: dataSets
     };
 }
+
+function rainbowStop(h) 
+{
+  let f= (n,k=(n+h*12)%12) => .5-.5*Math.max(Math.min(k-3,9-k,1),-1);  
+  let rgb2hex = (r,g,b) => "#"+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,0)).join('');
+  return ( rgb2hex(f(0), f(8), f(4)) );
+} 
 
 /**
  * Create the price chart
