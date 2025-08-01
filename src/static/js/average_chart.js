@@ -17,11 +17,17 @@ function prepareAveragePriceChartData() {
     let dataSets = [];
     // iterate through averagePriceData and add to dataSets
     averagePriceData.forEach((price, index) => {
+        // create a random background color
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        const backgroundColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+
         dataSets.push({
             label: `Average Price for ${price.hours} hours`,
             data: price.averagePrices,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: `rgba(${r}, ${g}, ${b}, 1.0)`,
+            borderColor: `rgb(${r}, ${g}, ${b})`,
             borderWidth: 1
         });
     });
@@ -44,8 +50,7 @@ function createAveragePriceChart(chartData) {
     if (averagePriceChart) {
         averagePriceChart.destroy();
     }
-    
-    // Create new chart
+        
     averagePriceChart = new Chart(ctx, {
         type: 'line',
         data: chartData,
@@ -54,7 +59,7 @@ function createAveragePriceChart(chartData) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true
                 }
 
             },

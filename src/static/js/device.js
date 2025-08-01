@@ -1,11 +1,7 @@
 // create a function call which returns an array of devices, each device has a name, a start hour of day, an end hour of day and the number of hours needed to charge
 function getDevices() {
     return [
-        { name: 'Volvo XC40', start: -1, end: -1, hours: 3.5 },
-        { name: 'Volvo XC40 morning', start: 11, end: 13, hours: 2 },
-        { name: 'Dishwasher', start: 20, end: 23, hours: 1.5 },
-        { name: 'Water Heater', start: -1, end: -1, hours: 2 },
-        { name: 'Cheapest Slot', start: -1, end: -1, hours: 1 }]};
+        { name: 'Volvo XC40', start: -1, end: -1, hours: 3.5 }]};
 
 // create a function that returns the average price given an array of octopus price slots
 function getAveragePrice(octopusPrices) {
