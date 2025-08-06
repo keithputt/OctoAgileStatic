@@ -30,67 +30,49 @@ function filterOctopusPrices(octopusPriceData, start, end) {
 }
 
 
-function getTimeSlots(prices, hours ) {
-    let timeSlots = [];
-    let timeSlot = {};
-    let periods = hours * 2;
-    
-    // iterate through prices array using for loop
-    for (let i = 0; i < prices.length - periods; i++) {
-        tempPrices = [];
-        timestampTo = prices[i]["timestamp_to"];
-        for (let j = 0; j < periods; j++) {
-            tempPrices.push(prices[i + j]);
-            timestampTo = prices[i+j]["timestamp_to"];
-        }
-        average = getAveragePrice(tempPrices);
-        timeSlot = { timestamp : prices[i].timestamp, timestamp_to : timestampTo,  average: average };
-        timeSlots.push(timeSlot);
-    }
-
-    // return time slots sorted by average price
-    return timeSlots.sort((a, b) => a.average - b.average);
-}
-
 //for each device create a map of name, start, end, hours needed and the matching time slots
 function processDeviceData(octopusPrices) {
     devices = getDevices();
     let deviceTimeSlots = [];
     devices.forEach((device) => {
         let deviceTimeSlot = {};
+        let averagePrices = getAveragePricesForPeriod(filterOctopusPrices(octopusPrices, device.start, device.end),device.hours*2);
         deviceTimeSlot.name = device.name;
         deviceTimeSlot.start = device.start;
         deviceTimeSlot.end = device.end;
         deviceTimeSlot.hours = device.hours;
-        deviceTimeSlot.prices = getTimeSlots(filterOctopusPrices(octopusPrices, device.start, device.end),device.hours);
+        deviceTimeSlot.prices = averagePrices.sort((a, b) => a.average - b.average); 
         deviceTimeSlots.push(deviceTimeSlot);
     });
     return deviceTimeSlots;
 }
 
 function getAveragePrices(octopusPrices) {
-    let hours = [1, 2, 3, 4];
-    let timeSlot = {};
+    let periods = [1, 2, 3, 4, 6, 7];
     let averages = [];
 
-    for (let j = 0; j < hours.length; j++) {
-        timeSlots = []
-        periods = hours[j] * 2;
-        // iterate through prices array using for loop up to maximum hours
-        for (let i = 0; i < octopusPrices.length - periods; i++) {
-            tempAveragePrices = [];
-            tempPrices = [];
-            for (let k = 0; k < periods; k++) {
-                if (i + k >= octopusPrices.length) {
-                    break;
-                }
-                tempPrices.push(octopusPrices[i + k]);
-            }
-            averagePrice = getAveragePrice(tempPrices);
-            //timeSlot = { timestamp : octopusPrices[i].timestamp, averagePrice: averagePrice };
-            timeSlots.push(averagePrice);
-        }
-        averages.push({hours : hours[j], averagePrices : timeSlots});
+    for (let j = 0; j < periods.length; j++) {
+        averages.push({periods : periods[j], averagePrices : getAveragePricesForPeriod(octopusPrices, periods[j])});
     }
     return averages;
+}
+
+function getAveragePricesForPeriod(octopusPrices, periods) {
+    let timeSlots = [];
+    for (let i = 0; i < octopusPrices.length - periods; i++) {
+        let empAveragePrices = [];
+        let tempPrices = [];
+        let timestampTo = octopusPrices[i]["timestamp_to"];
+        for (let j = 0; j < periods; j++) {
+            if (i + j >= octopusPrices.length) {
+                break;
+            }
+            tempPrices.push(octopusPrices[i + j]);
+            timestampTo = octopusPrices[i+j]["timestamp_to"];
+        }
+        const averagePrice = getAveragePrice(tempPrices);
+        const timeSlot = { timestamp : octopusPrices[i].timestamp, timestamp_to : timestampTo, average: averagePrice };
+        timeSlots.push(timeSlot);
+    }
+    return timeSlots;
 }

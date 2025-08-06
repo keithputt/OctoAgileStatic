@@ -24,9 +24,13 @@ function prepareAveragePriceChartData() {
 
         const backgroundColor = rainbowStop(index/averagePriceData.length);
 
+        const averagePrices = price.averagePrices.map(averagePrice => {
+            return averagePrice.average;
+        });
+
         dataSets.push({
-            label: `Average Price for ${price.hours} hours`,
-            data: price.averagePrices,
+            label: `Average Price for ${price.periods} periods`,
+            data: averagePrices,
             backgroundColor: backgroundColor,
             borderColor: backgroundColor,
             borderWidth: 1
