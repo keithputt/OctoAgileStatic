@@ -118,7 +118,7 @@ function createPriceChart(chartData) {
             },
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: false,
                     title: {
                         display: true,
                         text: 'Price (p/kWh)'

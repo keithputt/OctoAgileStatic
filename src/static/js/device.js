@@ -36,16 +36,17 @@ function processDeviceData(octopusPrices) {
     let deviceTimeSlots = [];
     devices.forEach((device) => {
         let deviceTimeSlot = {};
-        let averagePrices = getAveragePricesForPeriod(filterOctopusPrices(octopusPrices, device.start, device.end),device.hours*2);
+        let averagePrices = getAveragePricesForPeriodSortedByAverage(filterOctopusPrices(octopusPrices, device.start, device.end),device.hours*2);
         deviceTimeSlot.name = device.name;
         deviceTimeSlot.start = device.start;
         deviceTimeSlot.end = device.end;
         deviceTimeSlot.hours = device.hours;
-        deviceTimeSlot.prices = averagePrices.sort((a, b) => a.average - b.average); 
+        deviceTimeSlot.prices = averagePrices; 
         deviceTimeSlots.push(deviceTimeSlot);
     });
     return deviceTimeSlots;
 }
+
 
 function getAveragePrices(octopusPrices) {
     let periods = [1, 2, 3, 4, 6, 7];
@@ -75,4 +76,9 @@ function getAveragePricesForPeriod(octopusPrices, periods) {
         timeSlots.push(timeSlot);
     }
     return timeSlots;
+}
+
+function getAveragePricesForPeriodSortedByAverage(octopusPrices, periods) {
+    let timeSlots = getAveragePricesForPeriod(octopusPrices, periods);
+    return timeSlots.sort((a, b) => a.average - b.average);
 }

@@ -17,11 +17,6 @@ function prepareAveragePriceChartData() {
     let dataSets = [];
     // iterate through averagePriceData and add to dataSets
     averagePriceData.forEach((price, index) => {
-        // create a random background color
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-
         const backgroundColor = rainbowStop(index/averagePriceData.length);
 
         const averagePrices = price.averagePrices.map(averagePrice => {
@@ -77,7 +72,7 @@ function createAveragePriceChart(chartData) {
             },
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: false,
                     title: {
                         display: true,
                         text: 'Price (p/kWh)'
