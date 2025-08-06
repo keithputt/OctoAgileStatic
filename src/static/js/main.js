@@ -26,6 +26,11 @@ const expensiveTimesList = document.getElementById('expensive-times-list');
 const expensiveLoading = document.getElementById('expensive-loading');
 const priceTableBody = document.getElementById('price-table-body');
 const deviceTableBody = document.getElementById('device-table-body');
+const addDeviceName = document.getElementById('add_device_name');
+const addDeviceStart = document.getElementById('add_device_start');
+const addDeviceEnd = document.getElementById('add_device_end');
+const addDeviceHours = document.getElementById('add_device_hours');
+const addDeviceButton = document.getElementById('add_device_button');
 
 // Navigation links
 const navLinks = document.querySelectorAll('[data-period]');
@@ -43,6 +48,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load initial data for today
     loadPriceData('now');
+});
+
+addDeviceButton.addEventListener('click', () => {
+    const deviceName = addDeviceName.value;
+    const deviceStart = parseInt(addDeviceStart.value);
+    const deviceEnd = parseInt(addDeviceEnd.value);
+    const deviceHours = parseFloat(addDeviceHours.value);
+
+    // Validate input
+    if (!deviceName || !deviceStart || !deviceEnd || !deviceHours) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    // Add device
+    addDevice(deviceName, deviceStart, deviceEnd, deviceHours);
+    loadDeviceData()
+
+    //clear fields
+    addDeviceName.value = '';
+    addDeviceStart.value = '';
+    addDeviceEnd.value = '';
+    addDeviceHours.value = '';
 });
 
 /**
@@ -503,13 +531,6 @@ function updateDeviceTable() {
         hoursCell.colSpan = 2; // Span across two columns
         hoursCell.style.textAlign = 'left';
         row.appendChild(hoursCell);
-
-        /* Max Price column
-        const maxPriceCell = document.createElement('td');
-        maxPriceCell.textContent = device.max_price.toFixed(2);
-        maxPriceCell.style.fontStyle = 'italic';
-        maxPriceCell.style.color = 'yellow';
-        row.appendChild(maxPriceCell);*/
 
         deviceTableBody.appendChild(row);
         
