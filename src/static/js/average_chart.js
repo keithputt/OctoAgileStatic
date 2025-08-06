@@ -15,21 +15,29 @@ function prepareAveragePriceChartData() {
     });
     
     let dataSets = [];
+    let maxDataSets = 8;
+
     // iterate through averagePriceData and add to dataSets
     averagePriceData.forEach((price, index) => {
-        const backgroundColor = rainbowStop(index/averagePriceData.length);
+        // break if index is greater than maxDataSets
+        if (index >= maxDataSets) {
+            return dataSets;
+        }
+
+        const backgroundColor = rainbowStop(index/Math.min(averagePriceData.length, maxDataSets));
 
         const averagePrices = price.averagePrices.map(averagePrice => {
             return averagePrice.average;
         });
 
         dataSets.push({
-            label: `Average Price for ${price.periods} periods`,
+            label: `Average Price for ${(price.periods/2).toFixed(1)} hours`,
             data: averagePrices,
             backgroundColor: backgroundColor,
             borderColor: backgroundColor,
             borderWidth: 1
         });
+
     });
     
 

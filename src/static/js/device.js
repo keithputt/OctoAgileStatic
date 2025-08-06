@@ -55,11 +55,11 @@ function processDeviceData(octopusPrices) {
 
 
 function getAveragePrices(octopusPrices) {
-    let periods = [1, 2, 3, 4, 6, 7];
+    let maxPeriods = octopusPrices.length;
     let averages = [];
 
-    for (let j = 0; j < periods.length; j++) {
-        averages.push({periods : periods[j], averagePrices : getAveragePricesForPeriod(octopusPrices, periods[j])});
+    for (let periods = 1; periods <= maxPeriods; periods++) {
+        averages.push({periods : periods, averagePrices : getAveragePricesForPeriod(octopusPrices, periods)});
     }
     return averages;
 }
